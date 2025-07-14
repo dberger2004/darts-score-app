@@ -35,8 +35,7 @@ public class Player {
             System.out.println("Überworfen! Rest: " + currentScore);
         } else if (currentScore - hit == 0) {
             currentScore = 0;
-            winLeg();
-            resetForNewLeg();
+            legsWon++;
         } else {
             currentScore -= hit;
         }
@@ -46,14 +45,12 @@ public class Player {
         this.currentScore = startingScore;
     }
 
-    public void winLeg() {
-        legsWon++;
-        resetForNewLeg();
-    }
-
     public void winSet() {
         setsWon++;
-        legsWon = 0;
+    }
+
+    public void resetForNewSet() {
+        this.legsWon = 0;
         resetForNewLeg();
     }
 

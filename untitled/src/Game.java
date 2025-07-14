@@ -20,15 +20,26 @@ public class Game {
     }
 
     public void start() {
-        while (!player1.hasWonMatch(setsToWin) && !player2.hasWonMatch(setsToWin)) {
+        while (!player1.hasWonMatch(setsToWin) || !player2.hasWonMatch(setsToWin)) {
             System.out.println("\n ------ Neues Leg startet ------");
             playLeg();
 
             if (isSetOver()) {
                 handleSetWin();
+
+                if (player1.hasWonMatch(setsToWin)) {
+                    System.out.println(player1.getName() + " hat " +
+                            player1.getSetsWon() + "-" + player2.getSetsWon() +
+                            " gewonnen.");
+                    break;
+                }
+
+                if (player2.hasWonMatch(setsToWin)) {
+                    System.out.println(player2 + " hat gewonnen.");
+                    break;
+                }
             }
         }
-        announceWinner();
     }
 
     private void playLeg() {
@@ -52,12 +63,21 @@ public class Game {
     }
 
     private int promptScore() {
-        System.out.print("Geworfene Punktzahl eingeben: ");
-        while (!scanner.hasNextInt() || scanner.nextInt() > 180) {
-            System.out.println("Ungültig! Bitte Zahl eingeben: ");
-            scanner.next();
+        int hit;
+        System.out.print("Geworfene Punktzahl eingeben (0-180): ");
+        while (true) {
+            if (scanner.hasNextInt()) {
+                hit = scanner.nextInt();
+                if (hit >= 0 && hit <= 180) {
+                    return hit;
+                }
+                System.out.print("Ungültig! Zahl muss zwischen 0-180 sein. " +
+                        "Punktzahl: ");
+            } else {
+                System.out.print("Ungültig! Bitte Zahl eingeben. Punktzahl: ");
+                scanner.next();
+            }
         }
-        return scanner.nextInt();
     }
 
     private void displayCurrentScores() {
@@ -78,17 +98,14 @@ public class Game {
             player2.winSet();
             System.out.println(player2.getName() + " hat das Set gewonnen.");
         }
+
+        player1.resetForNewSet();
+        player2.resetForNewSet();
+        player1.resetForNewSet();
+        player2.resetForNewSet();
     }
 
     private void switchPlayer() {
         currentPlayer = (currentPlayer == player1) ? player2 : player1;
-    }
-
-    private void announceWinner() {
-        if (player1.hasWonMatch(setsToWin)) {
-            System.out.println("\n>>> " + player1.getName() + " hat gewonnen.");
-        } else {
-            System.out.println("\n>>> " + player2.getName() + " hat gewonnen.");
-        }
     }
 }
